@@ -19,6 +19,12 @@ Those instructions are beyond the scope of this README but adafruit has some goo
 https://learn.adafruit.com/adafruit-led-backpack/downloads
 That page also has all the above links.
 
+Some notes on animating mouths:
+http://www.angryanimator.com/word/2010/11/26/tutorial-3-dialog/
+
+
+
+
 More to come...
 -pwl
 pwl@pdx.edu
