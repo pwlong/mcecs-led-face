@@ -8,10 +8,10 @@
 
 // Because the two eye matrices share the same address, only four
 // matrix objects are needed for the five displays:
-#define MATRIX_EYES         0
-#define MATRIX_MOUTH_LEFT   1
-#define MATRIX_MOUTH_MIDDLE 2
-#define MATRIX_MOUTH_RIGHT  3
+#define EYES         0
+#define MOUTH_LEFTMOUTH_MIDDLE   1
+#define MOUTH_MIDDLEMOUTH_RIGHT 2
+#define MOUTH_RIGHTMOUTH_RIGHT  3
 Adafruit_8x8matrix matrix[4] = { // Array of Adafruit_8x8matrix objects
   Adafruit_8x8matrix(), Adafruit_8x8matrix(),
   Adafruit_8x8matrix(), Adafruit_8x8matrix() };
@@ -44,6 +44,7 @@ void setup() {
   // Seed random number generator from an unused analog input:
   randomSeed(analogRead(A0));
   Serial.begin(9600);
+  pinMode(13,OUTPUT);
 
   uint8_t postFail = 0;
   
@@ -71,30 +72,33 @@ void setup() {
 
 void loop() {      
   // always be blinking    
-  matrix[MATRIX_EYES].clear();
-  matrix[MATRIX_EYES].drawBitmap(0, 0,
-  blinkImg[(blinkCountdown < sizeof(blinkIndex)) ? blinkIndex[blinkCountdown] : 0], 8, 8, LED_ON);
+  matrix[EYES].clear();
+  matrix[EYES].drawBitmap(0, 0, blinkImg[(blinkCountdown < sizeof(blinkIndex)) ? blinkIndex[blinkCountdown] : 0], 8, 8, LED_ON);
   if(--blinkCountdown == 0) blinkCountdown = random(5, 180);
 
   // make a pupil by filling a rectangle with dark pixels
-  matrix[MATRIX_EYES].fillRoundRect(pupilX, pupilY, pupilSize, pupilSize, 1, LED_OFF);
+  matrix[EYES].fillRoundRect(pupilX, pupilY, pupilSize, pupilSize, 1, LED_OFF);
   for(uint8_t i=0; i<4; ++i) matrix[i].writeDisplay();
   delay(20); // ~50 FPS
-
+/*
   static char buffer[80];
     if (readline(Serial.read(), buffer, 80) >0) {
+      Serial.print("you sent over: ");
+      Serial.println(buffer);
       switch(buffer){
         case "top_lid_down":
           for (uint8_t ii=0; ii<4; ++ii){
-            matrix[MATRIX_EYES].drawBitmap (0, 0, top_lid_down[ii], 8, 8, LED_ON);
+            matrix[EYES].drawBitmap (0, 0, top_lid_down[ii], 8, 8, LED_ON);
             delay(20);
           }
           delay(500);
           break;
         
-        default: /* nothing to do yet */; break;
+        default:
+          ; // dothing to do yet
+          break;
       }
-    }
+    }*/
 
 
 
