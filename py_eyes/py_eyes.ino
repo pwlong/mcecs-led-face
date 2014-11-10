@@ -49,12 +49,11 @@ void setup() {
   uint8_t postFail = 0;
   
   // Initialize each matrix object and run POST
-  Serial.println("Starting power-on self-test.    ");
+  Serial.println("Starting power-on self-test.");
   for(uint8_t i=0; i<4; i++) {
     matrix[i].begin(matrixAddr[i]);
     matrix[i].setRotation(3);
     matrix[i].setBrightness(0);
-  
     postFail = post(matrix[i]);
 
     if (postFail){
@@ -71,7 +70,7 @@ void setup() {
 }
 
 void loop() {      
-  // always be blinking    
+  // always be blinking
   matrix[EYES].clear();
   matrix[EYES].drawBitmap(0, 0, blinkImg[(blinkCountdown < sizeof(blinkIndex)) ? blinkIndex[blinkCountdown] : 0], 8, 8, LED_ON);
   if(--blinkCountdown == 0) blinkCountdown = random(5, 180);
@@ -80,25 +79,23 @@ void loop() {
   matrix[EYES].fillRoundRect(pupilX, pupilY, pupilSize, pupilSize, 1, LED_OFF);
   for(uint8_t i=0; i<4; ++i) matrix[i].writeDisplay();
   delay(20); // ~50 FPS
-/*
+
   static char buffer[80];
     if (readline(Serial.read(), buffer, 80) >0) {
       Serial.print("you sent over: ");
       Serial.println(buffer);
-      switch(buffer){
-        case "top_lid_down":
+      if (buffer == "top_lid_down"){
+          // cycle through the frames
           for (uint8_t ii=0; ii<4; ++ii){
             matrix[EYES].drawBitmap (0, 0, top_lid_down[ii], 8, 8, LED_ON);
             delay(20);
           }
+          // hold for a little while
           delay(500);
-          break;
-        
-        default:
-          ; // dothing to do yet
-          break;
+      }else {
+        Serial.print("no valid action specified\n");
       }
-    }*/
+    }
 
 
 
@@ -117,6 +114,3 @@ void loop() {
     }
   }*/
 }
-
-
-  
