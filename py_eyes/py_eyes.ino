@@ -31,8 +31,8 @@ uint8_t
   gazeFrames     =  50, // Duration of eye movement (smaller = faster)
   mouthPos       =   0, // Current image number for mouth
   mouthCountdown =  10; // Countdown to next mouth change
-int8_t
-  eyeX = 3, eyeY = 3;   // Current eye position
+//int8_t
+//  eyeX = 3, eyeY = 3;   // Current eye position
   
 uint8_t
   pupilX  = 3, pupilY = 3,
@@ -47,29 +47,38 @@ void setup() {
   pinMode(13,OUTPUT);
 
   uint8_t postFail = 0;
-  
+ 
+
   // Initialize each matrix object and run POST
   Serial.println("Starting power-on self-test.");
   for(uint8_t i=0; i<4; i++) {
     matrix[i].begin(matrixAddr[i]);
     matrix[i].setRotation(3);
     matrix[i].setBrightness(0);
-    postFail = post(matrix[i]);
+    postFail = 0; // skip post durung testing post(matrix[i]);
 
     if (postFail){
       Serial.print("matrix ");
       Serial.print(i);
       Serial.println(" failed power-on slef-test! This is fatal, exiting.");
-      delay(500); //give async serial time to make it out to console
+      delay(900); //give async serial time to make it out to console
       exit(1);
     }else {
       Serial.print("Power-on self-test passed for matrix: ");
       Serial.println(i);
     }
   }
+  Serial.println("Starting normal Operation");
+
+  
+  
 }
 
-void loop() {      
+void loop() {  
+
+  char buffer[80]; 
+  int rc;
+  
   // always be blinking
   matrix[EYES].clear();
   matrix[EYES].drawBitmap(0, 0, blinkImg[(blinkCountdown < sizeof(blinkIndex)) ? blinkIndex[blinkCountdown] : 0], 8, 8, LED_ON);
@@ -80,23 +89,34 @@ void loop() {
   for(uint8_t i=0; i<4; ++i) matrix[i].writeDisplay();
   delay(20); // ~50 FPS
 
-  static char buffer[80];
-    if (readline(Serial.read(), buffer, 80) >0) {
-      Serial.print("you sent over: ");
-      Serial.println(buffer);
-      if (buffer == "top_lid_down"){
-          // cycle through the frames
-          for (uint8_t ii=0; ii<4; ++ii){
-            matrix[EYES].drawBitmap (0, 0, top_lid_down[ii], 8, 8, LED_ON);
-            delay(20);
-          }
-          // hold for a little while
-          delay(500);
-      }else {
-        Serial.print("no valid action specified\n");
+  if(Serial.available()){
+	if (readline(Serial.read(), buffer, 80) >0) {
+	  Serial.print("you sent over: ");
+	  Serial.println(buffer);
+	  if (strncmp(buffer,"topdown",80) == 0){
+		rc = frame_4(topdown);
+	  } else
+	  if (strncmp(buffer, "squint", 80) == 0){
+		rc = frame_4(squint);
+	  } else
+	  if (strncmp(buffer, "botup", 80) == 0){
+		rc = frame_4(botup);
+	  } else
+	  if (strncmp(buffer, "angler", 80) == 0){
+		rc = frame_4(angler);
+	  } else
+	  if (strncmp(buffer, "curve", 80) == 0){
+		rc = frame_4(curve);
+		
+		
+		
+	    }else {
+	      Serial.print("I don't know what that means\n");
+	    }
       }
-    }
 
+	  
+}
 
 
 /*
@@ -112,5 +132,7 @@ void loop() {
       case 'r':      // fall through to reset
       default:  pupilX = pupilY = 3; pupilSize = 2; break;
     }
-  }*/
+  }
+*/
+
 }

@@ -1,8 +1,38 @@
 // Helper functions for the py_eyes sketch
 
+// top lid down animation routine
+// Right now this test always passes and it is up to the user to observe the output
+// to determine if overything went OK
+
+int frame_4(const uint8_t animation_name[][8]){	
+	for (uint8_t i=0; i<4; ++i){
+		matrix[EYES].clear();
+		matrix[EYES].drawBitmap (0, 0, animation_name[i], 8, 8, LED_ON);
+		matrix[EYES].writeDisplay();
+		delay(20);
+	}
+	// hold
+	delay(1000);
+	for (uint8_t j=4; j>0; --j){
+		matrix[EYES].clear();
+		matrix[EYES].drawBitmap (0, 0, animation_name[j], 8, 8, LED_ON);
+		matrix[EYES].writeDisplay();
+		delay(20);
+	}
+	return 0;
+}
+
+
+
+
+
+
+// Power on self test
+//
+// Right now this test always passes and it is up to the user
+// to observe the output to determine if overything went OK
 int post(Adafruit_8x8matrix matrix) {
-  // Right now this test always passes and it is up to the user to observe the output
-  // to determine if overything went OK
+  
   matrix.setTextSize(1);
   matrix.setTextWrap(false);  // we dont want text to wrap so it scrolls nicely
   matrix.setTextColor(LED_ON);
@@ -18,9 +48,7 @@ int post(Adafruit_8x8matrix matrix) {
   return(0); 
 }
 
-
-
-
+// function to read from serial
 int readline(int readch, char *buffer, int len){
   static int pos = 0;
   int rpos;

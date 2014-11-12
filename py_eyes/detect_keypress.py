@@ -1,10 +1,7 @@
 #!/usr/bin/env python
 
 import serial
-#import getch
-#import os, sys
-#import string, random
-#import types
+
 import sys
 
 try:
@@ -44,8 +41,9 @@ else:
 if __name__=='__main__':
 
   errorCode = 0
-  cmd = serial.Serial('/dev/cu.usbmodemfa131',9600)
-   
+  ##cmd = serial.Serial('/dev/cu.usbmodemfa131',9600)
+  cmd = serial.Serial('COM9',9600)
+  
   try:
     while 1:
       userInput = getch()
@@ -54,25 +52,25 @@ if __name__=='__main__':
       elif userInput in ('w', 'a', 's', 'd', 'f', 'g', 'r'):
         cmd.write(userInput)
       else:
-        print 'Not a valid command, press q to quit'
+        print ('Not a valid command, press q to quit')
              
   # Note: By convention, all local exception 'constants' end 
   # in '_ERROR' regardless of their intended use. 
   except KeyboardInterrupt:
-    print '\n' * 3
-    print '[interrupted by user]'
-    print '\n' * 3
+    print ('\n' * 3)
+    print ('[interrupted by user]')
+    print ('\n' * 3)
   except 'USER_QUIT_ERROR':
-    print '\n' * 3
-    print '[interrupted by user]'
-    print '\n' * 3
+    print ('\n' * 3)
+    print ('[interrupted by user]')
+    print ('\n' * 3)
   except:
     # unexpected error
-    print '\n' * 3
-    #traceback.print_exc()
-    print '\n' * 3
+    print ('\n' * 3)
+    # traceback.print_exc()
+    print ('\n' * 3)
 
   errorCode = 2
-  print'WTF,Paul'
+  print('WTF,Paul')
   cmd.close         # close the serial connection
   sys.exit(errorCode)
