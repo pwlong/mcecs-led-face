@@ -55,7 +55,8 @@ void setup() {
     matrix[i].begin(matrixAddr[i]);
     matrix[i].setRotation(3);
     matrix[i].setBrightness(0);
-    postFail = 0; // skip post durung testing post(matrix[i]);
+	// uncomment this line and comment out the next to skip post for testing postFail = 0;
+    postFail = post(matrix[i]);
 
     if (postFail){
       Serial.print("matrix ");
