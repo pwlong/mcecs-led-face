@@ -65,6 +65,5 @@ http://www.angryanimator.com/word/2010/11/26/tutorial-3-dialog/
 
 
 More to come...
--pwl
 pwl@pdx.edu
-October 2014
+November 2014
