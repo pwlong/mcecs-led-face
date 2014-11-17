@@ -58,7 +58,14 @@ void setup() {
 	// uncomment this line and comment out the next to skip post for testing postFail = 0;
     postFail = post(matrix[i]);
 
-    if (postFail){
+    
+	// This is kind of ridiculous right now, POST always passes as far as the code is concerned
+	// it is up to the user to observe the output and decide if everything is working
+	// This stuff in in here in case the next programmer is better than pwl and he/she can
+	// figure out a way to have the LEDs actually report if they have passed or failed
+	// and also to prompt future students to understand that self testing is something we
+	// are trying to get everyone to do.
+	if (postFail){
       Serial.print("matrix ");
       Serial.print(i);
       Serial.println(" failed power-on slef-test! This is fatal, exiting.");
