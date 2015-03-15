@@ -6,12 +6,16 @@
 #include "Animation_Frames.h"
 
 
+
 // Because the two eye matrices share the same address, only four
 // matrix objects are needed for the five displays:
 #define EYES         0
-#define MOUTH_LEFTMOUTH_MIDDLE   1
-#define MOUTH_MIDDLEMOUTH_RIGHT 2
-#define MOUTH_RIGHTMOUTH_RIGHT  3
+#define MOUTH_LEFT   1
+#define MOUTH_MIDDLE 2
+#define MOUTH_RIGHT  3
+///#define MATRICES     2
+//String  message = "Hello World!";
+
 Adafruit_8x8matrix matrix[4] = { // Array of Adafruit_8x8matrix objects
   Adafruit_8x8matrix(), Adafruit_8x8matrix(),
   Adafruit_8x8matrix(), Adafruit_8x8matrix() };
@@ -21,7 +25,7 @@ Adafruit_8x8matrix matrix[4] = { // Array of Adafruit_8x8matrix objects
 // install one or more matrices in the wrong physical position --
 // re-order the addresses in this table and you can still refer to
 // matrices by index above, no other code or wiring needs to change.
-static const uint8_t matrixAddr[] = { 0x70, 0x71, 0x72, 0x73 };
+static const uint8_t matrixAddr[] = { 0x70, 0x72, 0x71, 0x73, 0x74, 0x75, 0x76, 0x77};
 
 
 uint8_t
@@ -40,7 +44,6 @@ uint8_t
 
 
 void setup() {
-
   // Seed random number generator from an unused analog input:
   randomSeed(analogRead(A0));
   Serial.begin(9600);
@@ -51,12 +54,13 @@ void setup() {
 
   // Initialize each matrix object and run POST
   Serial.println("Starting power-on self-test.");
-  for(uint8_t i=0; i<4; i++) {
+  for(uint8_t i=0; i<8; i++) {
     matrix[i].begin(matrixAddr[i]);
+    matrix[i].setTextWrap(false);
     matrix[i].setRotation(3);
-    matrix[i].setBrightness(0);
+    matrix[i].setBrightness(15);
 	// uncomment this line and comment out the next to skip post for testing postFail = 0;
-    postFail = post(matrix[i]);
+    //postFail = post(matrix[EYES]);
 
     
 	// This is kind of ridiculous right now, POST always passes as far as the code is concerned
@@ -65,7 +69,7 @@ void setup() {
 	// figure out a way to have the LEDs actually report if they have passed or failed
 	// and also to prompt future students to understand that self testing is something we
 	// are trying to get everyone to do.
-	if (postFail){
+  if (postFail){
       Serial.print("matrix ");
       Serial.print(i);
       Serial.println(" failed power-on slef-test! This is fatal, exiting.");
@@ -78,8 +82,27 @@ void setup() {
   }
   Serial.println("Starting normal Operation");
 
-  
-  
+
+
+
+  // srcoll POST message across the mouth
+  for (int x=0; x>=-176*6; x--) {
+   matrix[3].clear();
+   matrix[3].setCursor(x+8,1);
+   matrix[3].print("Hello Dr. Perkowski. Would you like to hear a joke?              OK   A preist a rabbi and a nun walk into a bar......Actually  maybe I better tell you after class.");
+   matrix[3].writeDisplay();
+   
+   matrix[2].clear();
+   matrix[2].setCursor(x+16,1);
+   matrix[2].print("Hello Dr. Perkowski. Would you like to hear a joke?              OK   A preist a rabbi and a nun walk into a bar......Actually  maybe I better tell you after class.");
+   matrix[2].writeDisplay();
+   
+   matrix[1].clear();
+   matrix[1].setCursor(x+24,1);
+   matrix[1].print("Hello Dr. Perkowski. Would you like to hear a joke?              OK   A preist a rabbi and a nun walk into a bar......Actually  maybe I better tell you after class.");
+   matrix[1].writeDisplay();
+   delay(20);
+  } 
 }
 
 void loop() {  
@@ -91,6 +114,22 @@ void loop() {
   matrix[EYES].clear();
   matrix[EYES].drawBitmap(0, 0, blinkImg[(blinkCountdown < sizeof(blinkIndex)) ? blinkIndex[blinkCountdown] : 0], 8, 8, LED_ON);
   if(--blinkCountdown == 0) blinkCountdown = random(5, 180);
+
+// Draw mouth, switch to new random image periodically
+  drawMouth(mouthImg[mouthPos]);
+  if(--mouthCountdown == 0) {
+    mouthPos = random(6); // Random image
+    // If the 'neutral' position was chosen, there's a 1-in-5 chance we'll
+    // select a longer hold time.  This gives the appearance of periodic
+    // pauses in speech (e.g. between sentences, etc.).
+    mouthCountdown = ((mouthPos == 0) && (random(5) == 0)) ?
+      random(200, 800) : // Longer random duration  -----PWL original values (10,40)
+      random(2, 8);    // Shorter random duration -----PWL original values ( 2, 8)
+  }
+
+
+
+
 
   // make a pupil by filling a rectangle with dark pixels
   matrix[EYES].fillRoundRect(pupilX, pupilY, pupilSize, pupilSize, 1, LED_OFF);
