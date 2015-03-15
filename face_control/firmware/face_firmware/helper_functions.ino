@@ -1,6 +1,8 @@
 // Helper functions for the py_eyes sketch
 
-// Generic 4 fram animation routine
+
+// Generic 4 frame animation routine
+
 int frame_4(const uint8_t animation_name[][8]){	
 	for (uint8_t i=0; i<4; ++i){
 		matrix[EYES].clear();
@@ -19,6 +21,7 @@ int frame_4(const uint8_t animation_name[][8]){
 	return 0;
 }
 
+
 // Draw mouth image across three adjacent displays
 void drawMouth(const uint8_t *img) {
   for(uint8_t i=0; i<3; i++) {
@@ -26,6 +29,7 @@ void drawMouth(const uint8_t *img) {
     matrix[MOUTH_LEFT + i].drawBitmap(i * -8, 0, img, 24, 8, LED_ON);
   }
 }
+
 
 
 // Power on self test
@@ -48,6 +52,7 @@ int post(Adafruit_8x8matrix matrix) {
   }
   return(0); 
 }
+
 
 // function to read from serial
 int readline(int readch, char *buffer, int len){
